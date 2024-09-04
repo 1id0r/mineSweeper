@@ -3,9 +3,10 @@ var gBoard
 var MINE_IMG = '💣'
 
 const gLevel = {
-  SIZE: 10,
+  SIZE: 4,
   MINES: 10,
 }
+gLevel.size
 const gGame = {
   isOn: false,
   shownCount: 0,
@@ -14,8 +15,15 @@ const gGame = {
 }
 
 function onInit() {
+  onCloseModal()
+  gGame.isOn = true
+  gGame.shownCount = 0
+  gGame.markedCount = 0
+  gGame.secsPassed = 0
+  shownCount()
+  markedCount()
   gBoard = buildBoard(gLevel.SIZE)
-  //   placeMines(gBoard, gLevel.MINES)
+  // placeMines(gBoard, gLevel.MINES)
   setMinesNegsCount(gBoard)
   renderBoard(gBoard)
 }
@@ -33,9 +41,9 @@ function buildBoard(size) {
       }
     }
   }
-  board[1][2].isMine = true
+  board[1][1].isMine = true
   board[2][2].isMine = true
-  board[0][0].isMine = true
+  board[3][3].isMine = true
 
   return board
 }
@@ -81,7 +89,7 @@ function renderBoard(board) {
     }
     strHTML += '</tr>'
   }
-  console.log('strHTML', strHTML)
+  // console.log('strHTML', strHTML)
   const elBoard = document.querySelector('.board')
   elBoard.innerHTML = strHTML
 }
@@ -118,15 +126,35 @@ function setMinesNegsCount(board) {
 function onCellClicked(elCell, i, j) {
   const currCell = gBoard[i][j]
   console.log('elCell', elCell)
-
+  if (currCell.isMine) checkGameOver()
   if (!currCell.isShown) {
     currCell.isShown = true
     elCell.classList.remove('hidden')
     elCell.classList.add('shown')
     gGame.shownCount++
-    // console.log('shownCount', gGame.shownCount)
+    shownCount()
   }
-  // to be continued...
+  if ((currCell.minesAroundCount === 0) & !currCell.isMine) {
+    expandShown(i, j)
+  }
+  if (checkVictory()) {
+    checkGameOver()
+  }
+}
+
+function expandShown(row, col) {
+  for (var i = row - 1; i <= row + 1; i++) {
+    for (var j = col - 1; j <= col + 1; j++) {
+      if (i === row && j === col) continue
+      if (i >= 0 && i < gBoard.length && j >= 0 && j < gBoard[i].length) {
+        var currCell = gBoard[i][j]
+        if (!currCell.isShown) {
+          var elnegCell = document.querySelector(`#cell-${i}-${j}`)
+          onCellClicked(elnegCell, i, j)
+        }
+      }
+    }
+  }
 }
 
 function onCellMarked(event, i, j) {
@@ -136,14 +164,74 @@ function onCellMarked(event, i, j) {
   var elCell = document.querySelector(`#cell-${i}-${j}`)
   //   console.log('elCell', elCell)
   if (currCell.isShown) return
-
   if (!currCell.isMarked) {
     currCell.isMarked = true
     elCell.classList.add('marked')
     elCell.innerHTML = '🚩'
+    gGame.markedCount++
+    markedCount()
   } else {
     currCell.isMarked = false
     elCell.classList.remove('marked')
     elCell.innerHTML = ''
+    gGame.markedCount--
+    markedCount()
   }
+
+  if (checkVictory()) {
+    checkGameOver()
+  }
+}
+function checkGameOver() {
+  if (checkVictory()) {
+    console.log('you Won!')
+    var elGameOverModal = document.querySelector('h2')
+    elGameOverModal.innerText = 'Victory'
+  } else {
+    var elGameOverModal = document.querySelector('h2')
+    elGameOverModal.innerText = 'Game Over'
+  }
+  onOpenModal()
+  gGame.isOn = false
+}
+
+function checkVictory() {
+  for (var i = 0; i < gBoard.length; i++) {
+    for (var j = 0; j < gBoard.length; j++) {
+      var currCell = gBoard[i][j]
+      if (!currCell.isMine && !currCell.isShown) return false
+      if (currCell.isMine && !currCell.isShown && !currCell.isMarked)
+        return false
+    }
+  }
+  return true
+}
+
+//////////////////////////////////////////////////////////////////////
+
+function onOpenModal() {
+  const elModal = document.querySelector('.modal')
+  elModal.style.display = 'block'
+}
+
+function onCloseModal() {
+  const elModal = document.querySelector('.modal')
+  elModal.style.display = 'none'
+}
+
+function shownCount() {
+  var shownCount = gGame.shownCount
+  var elShownCount = document.querySelector('span.shown-count')
+  elShownCount.innerText = shownCount
+}
+
+function markedCount() {
+  var markedCount = gGame.markedCount
+  var elMarkedCount = document.querySelector('span.marked-count')
+  elMarkedCount.innerText = markedCount
+}
+
+function setBoardSize(grid) {
+  gLevel.SIZE = grid
+  onInit()
 }

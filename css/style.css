@@ -5,9 +5,13 @@ body {
 }
 
 table {
+  margin: 0 auto;
+
+  top: 50%;
+  left: 50%;
   width: 600px;
-  height: 300px;
-  margin: 20px;
+  height: 600px;
+  transform: translate(-50% -50%);
 }
 td {
   width: 40px;
@@ -36,4 +40,52 @@ td {
   background-color: #ff9d0063;
   color: #fff;
   cursor: pointer;
+}
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #2c3e50;
+  color: #ecf0f1;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  width: 80%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.modal h2 {
+  margin-top: 0;
+  font-size: 24px;
+  font-weight: bold;
+  color: #e74c3c;
+}
+
+.modal button {
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.modal button:hover {
+  background-color: #c0392b;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 999;
 }

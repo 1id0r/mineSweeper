@@ -8,9 +8,22 @@
   </head>
   <body onload="onInit()">
     <h1>MineSweeper</h1>
+    <p>Cells Shown: <span class="shown-count"></span></p>
+    <p>Cells Marked: <span class="marked-count"></span></p>
+    <p></p>
     <table>
       <tbody class="board"></tbody>
     </table>
+    <div class="diff-buttons">
+      <button onclick="setBoardSize(4)">Easy (4x4)</button>
+      <button onclick="setBoardSize(6)">Medium (6x6)</button>
+      <button onclick="setBoardSize(8)">Hard (8x8)</button>
+      <button onclick="setBoardSize(10)">Expert (10x10)</button>
+    </div>
+    <div class="modal">
+      <h2></h2>
+      <button onclick="onInit()">Restart</button>
+    </div>
     <script src="./js/main.js"></script>
   </body>
 </html>
