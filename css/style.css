@@ -1,0 +1,39 @@
+body {
+  background-color: black;
+  color: rgb(255, 255, 255);
+  text-align: center;
+}
+
+table {
+  width: 600px;
+  height: 300px;
+  margin: 20px;
+}
+td {
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  vertical-align: middle;
+  background-color: grey;
+}
+
+.hidden {
+  background-color: #888;
+  color: transparent;
+  cursor: pointer;
+}
+
+.shown {
+  background-color: #ccc;
+  color: #000;
+}
+
+.mine.shown {
+  background-color: #e74c3c;
+  color: #fff;
+}
+.marked {
+  background-color: #ff9d0063;
+  color: #fff;
+  cursor: pointer;
+}
