@@ -32,7 +32,8 @@ td:hover {
   transition: 0.2s;
 }
 .shown-count,
-.marked-count {
+.marked-count,
+timer {
   font-weight: bold;
   color: #00bcd4;
 }
@@ -120,6 +121,7 @@ td:hover {
   height: 100%;
   background: rgba(0, 0, 0, 0.7);
   z-index: 999;
+  display: nones;
 }
 .card {
   background-color: #2c3e50;

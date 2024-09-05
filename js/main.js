@@ -1,29 +1,35 @@
 'use strict'
 var gBoard
 var MINE_IMG = '💣'
+var gIsFirstClick
+var gameTimer
+var startTime
+var elapsedTime = 0
 
 const gLevel = {
   SIZE: 4,
-  MINES: 10,
+  MINES: 4,
 }
-gLevel.size
+
 const gGame = {
   isOn: false,
   shownCount: 0,
   markedCount: 0,
   secsPassed: 0,
+  lives: 3,
 }
 
 function onInit() {
   onCloseModal()
   gGame.isOn = true
+  gIsFirstClick = true
   gGame.shownCount = 0
   gGame.markedCount = 0
   gGame.secsPassed = 0
   shownCount()
   markedCount()
   gBoard = buildBoard(gLevel.SIZE)
-  // placeMines(gBoard, gLevel.MINES)
+  placeMines(gBoard, gLevel.MINES)
   setMinesNegsCount(gBoard)
   renderBoard(gBoard)
 }
@@ -41,25 +47,11 @@ function buildBoard(size) {
       }
     }
   }
-  board[1][1].isMine = true
-  board[2][2].isMine = true
-  board[3][3].isMine = true
+  // board[1][1].isMine = true
+  // board[2][2].isMine = true
+  // board[3][3].isMine = true
 
   return board
-}
-
-function placeMines(board, numOfMines) {
-  var minesPlaced = 0
-  while (minesPlaced < numOfMines) {
-    var i = Math.floor(Math.random() * board.length)
-    var j = Math.floor(Math.random() * board[0].length)
-    var currCell = board[i][j]
-    if (!currCell.isMine) {
-      currCell.isMine = true
-      minesPlaced++
-    }
-  }
-  console.log('minesPLaced', minesPlaced)
 }
 
 function renderBoard(board) {
@@ -123,10 +115,30 @@ function setMinesNegsCount(board) {
   }
 }
 
+function placeMines(board, numOfMines) {
+  var minesPlaced = 0
+  while (minesPlaced < numOfMines) {
+    var i = Math.floor(Math.random() * board.length)
+    var j = Math.floor(Math.random() * board[0].length)
+    var currCell = board[i][j]
+    if (!currCell.isMine) {
+      currCell.isMine = true
+      minesPlaced++
+    }
+  }
+  console.log('minesPLaced', minesPlaced)
+}
+
 function onCellClicked(elCell, i, j) {
   const currCell = gBoard[i][j]
+  if (gIsFirstClick) {
+    if (currCell.isMine) placeMines(gBoard, gLevel.MINES)
+    startTimer()
+    gIsFirstClick = false
+  }
   console.log('elCell', elCell)
   if (currCell.isMine) checkGameOver()
+
   if (!currCell.isShown) {
     currCell.isShown = true
     elCell.classList.remove('hidden')
@@ -191,8 +203,8 @@ function checkGameOver() {
     var elGameOverModal = document.querySelector('h2')
     elGameOverModal.innerText = 'Game Over'
   }
+  stopTimer()
   onOpenModal()
-  gGame.isOn = false
 }
 
 function checkVictory() {
@@ -232,6 +244,26 @@ function markedCount() {
 }
 
 function setBoardSize(grid) {
+  stopTimer()
   gLevel.SIZE = grid
+  gLevel.MINES = grid
   onInit()
 }
+//////////////////////////////////////////////////////////////////////
+//timer
+function startTimer() {
+  startTime = Date.now()
+  gameTimer = setInterval(updateTimer, 1000)
+}
+function updateTimer() {
+  const now = Date.now()
+  gGame.secsPassed = Math.floor((now - startTime) / 1000)
+  console.log('elapsedTime', gGame.secsPassed)
+  var elTimer = document.querySelector('.timer')
+  elTimer.innerText = `time: ${gGame.secsPassed} secs`
+}
+function stopTimer() {
+  clearInterval(gameTimer)
+}
+
+//////////////////////////////////////////////////////////////////////
