@@ -26,8 +26,11 @@ function onInit() {
   gGame.shownCount = 0
   gGame.markedCount = 0
   gGame.secsPassed = 0
-  shownCount()
-  markedCount()
+  gGame.lives = 3
+  counters()
+  // livesCount()
+  // shownCount()
+  // markedCount()
   gBoard = buildBoard(gLevel.SIZE)
   placeMines(gBoard, gLevel.MINES)
   setMinesNegsCount(gBoard)
@@ -132,13 +135,26 @@ function placeMines(board, numOfMines) {
 function onCellClicked(elCell, i, j) {
   const currCell = gBoard[i][j]
   if (gIsFirstClick) {
-    if (currCell.isMine) placeMines(gBoard, gLevel.MINES)
+    if (currCell.isMine) {
+      placeMines(gBoard, gLevel.MINES)
+    }
     startTimer()
     gIsFirstClick = false
   }
-  console.log('elCell', elCell)
-  if (currCell.isMine) checkGameOver()
+  // console.log('elCell', elCell)
 
+  if (currCell.isMine && gGame.lives > 0) {
+    //lives activate
+    gGame.lives--
+    livesCount()
+    console.log('gGame.lives', gGame.lives)
+    return
+  }
+  if (currCell.isMine && gGame.lives === 0) {
+    //game over lives -0
+    checkGameOver()
+    isSmiley('🙁')
+  }
   if (!currCell.isShown) {
     currCell.isShown = true
     elCell.classList.remove('hidden')
@@ -216,54 +232,19 @@ function checkVictory() {
         return false
     }
   }
+  isSmiley('😎')
   return true
 }
 
-//////////////////////////////////////////////////////////////////////
-
-function onOpenModal() {
-  const elModal = document.querySelector('.modal')
-  elModal.style.display = 'block'
-}
-
-function onCloseModal() {
-  const elModal = document.querySelector('.modal')
-  elModal.style.display = 'none'
-}
-
-function shownCount() {
-  var shownCount = gGame.shownCount
-  var elShownCount = document.querySelector('span.shown-count')
-  elShownCount.innerText = shownCount
-}
-
-function markedCount() {
-  var markedCount = gGame.markedCount
-  var elMarkedCount = document.querySelector('span.marked-count')
-  elMarkedCount.innerText = markedCount
-}
-
-function setBoardSize(grid) {
-  stopTimer()
-  gLevel.SIZE = grid
-  gLevel.MINES = grid
+function resetGame() {
   onInit()
 }
+isSmiley('x')
+function isSmiley(smiley) {
+  var elSmiley = document.querySelector('span.smiley-indicator')
+  elSmiley.innerText = smiley
+}
+
 //////////////////////////////////////////////////////////////////////
-//timer
-function startTimer() {
-  startTime = Date.now()
-  gameTimer = setInterval(updateTimer, 1000)
-}
-function updateTimer() {
-  const now = Date.now()
-  gGame.secsPassed = Math.floor((now - startTime) / 1000)
-  console.log('elapsedTime', gGame.secsPassed)
-  var elTimer = document.querySelector('.timer')
-  elTimer.innerText = `time: ${gGame.secsPassed} secs`
-}
-function stopTimer() {
-  clearInterval(gameTimer)
-}
 
 //////////////////////////////////////////////////////////////////////

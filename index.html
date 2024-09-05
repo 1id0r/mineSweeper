@@ -10,8 +10,20 @@
     <div class="card">
       <h1>MineSweeper</h1>
       <p class="timer"></p>
-      <p>Cells Shown: <span class="shown-count"></span></p>
-      <p>Cells Marked: <span class="marked-count"></span></p>
+      <div>
+        <p>
+          Cells Shown: <span class="shown-count"></span> Cells Marked:
+          <span class="marked-count"></span>
+        </p>
+      </div>
+      <div class="lives-container">
+        <p><span class="lives-count"></span></p>
+        <div>
+          <button onclick="resetGame()">
+            <span class="smiley-indicator"></span>
+          </button>
+        </div>
+      </div>
       <table>
         <tbody class="board"></tbody>
       </table>
@@ -27,5 +39,6 @@
       </div>
     </div>
     <script src="./js/main.js"></script>
+    <script src="./js/utils.js"></script>
   </body>
 </html>
